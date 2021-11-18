@@ -1,5 +1,8 @@
 <template>
-         <!-- Header Area Start -->
+      <div>
+        
+
+          <!-- Header Area Start -->
         <header>
             <!-- Header Top Start -->
             <div class="header-top">
@@ -16,7 +19,7 @@
                         <!-- Search Box Start -->
                         <div class="col-lg-4 col-md-6 ml-auto mr-auto">
                             <div class="search-box-view">
-                                <form action="http://textileshop/shop/search" method="get">
+                                <form action="#" method="get">
                                     <input type="text" class="email" placeholder="Поиск ..." name="q">
                                     <button type="submit" class="submit"></button>
                                 </form>
@@ -52,28 +55,20 @@
                             <div class="middle-menu pull-right">
                                 <nav>
                                     <ul class="middle-menu-list">
-                                        <li>
-                                            
-                                            <router-link to="/" class="fa ">Домой</router-link> 
+                                        <li><router-link to="/">Домой<i class="fa "></i></router-link>
 
                                         </li>
-                                        <li><router-link to="/about">О Нас</router-link></li>
-                                        <li><a href="http://textileshop/shop/index">Товары<i class="fa"></i></a></li>
+                                        <li><router-link to="/about">О нас</router-link></li>
+                                        <li><router-link to="/shop">Товары<i class="fa"></i></router-link></li>
 
-
-                                        <li><a href="/site/contact">Контакты</a></li>
-                                        <li>
-                                            <a href="/cabinet">
-                                                <i class="fa fa-key" aria-hidden="true"></i> Кабинет <br/>
-                                            </a>
+                                        <li><router-link to="/contacts">Контакты</router-link></li>
+                                        
+                                        <li>                                           
+                                            <router-link to="/auth">
+                                                <i class="fa fa-key" aria-hidden="true"></i>
+                                                Личный кабинет <br/>
+                                            </router-link>                              
                                         </li>
-                                        <li>
-                                            <a href="/auth/logout">
-                                                <i class="fa fa-sign-out" aria-hidden="true"></i> LogOut <br/>
-                                            </a>
-                                        </li>
-
-
                                     </ul>
                                 </nav>
                             </div>
@@ -84,24 +79,65 @@
                             <div class="cart-box text-right">
                                 <ul id="cartBox">
 
-                                    <li><a href="/cart/index"><i class="fa fa-shopping-basket"></i><span class="cart-counter">0</span></a>
+                                    <li>
+                                        
+                                        <router-link to="/cart">
+                                            <i class="fa fa-shopping-basket"></i>
+                                            <span class="cart-counter">{{ totalQuantity }}</span>
+                                        </router-link>
+
                                         <ul class="ht-dropdown main-cart-box">
                                             <li>
 
+                                                   
+                                                        <!-- Cart Box Start -->
+                                                        <div class="single-cart-box"
+                                                        v-for="item in items"
+                                                        :key="item.id"
+                                                        >
+                                                            <div class="cart-img">
 
+                                                               
+                                                                <router-link 
+                                                                    :to="{ name:'detail', params:{ id:item.id }, 
+                                                                            query: { img: item.img }}">
+                                                                    <img :src=" item.img " :alt="item.img">
+                                                                       
+                                                                </router-link>
+
+                                                            </div>
+                                                            <div class="cart-content">
+                                                                <h6>                                                                   
+                                                                    <router-link 
+                                                                        :to="{ name:'detail', params:{ id:item.id }, 
+                                                                            query: { img: item.img }}">
+                                                                        {{ item.item}} 
+                                                                    </router-link>
+                                                                </h6>
+                                                                <span>{{ item.quantity * item.price }}</span>
+                                                            </div>
+
+                                                            <button
+                                                                type="button"
+                                                                class="del-icone delete btn btn-link"    
+                                                                @click="deleteItem(item.id)"
+                                                            >
+                                                                <i class="fa fa-window-close-o"></i>
+                                                            </button>
+
+                                                        </div>
+                                                        <!-- Cart Box End -->
+
+                                                    
 
                                                 <!-- Cart Footer Inner Start -->
                                                 <div class="cart-footer fix">
-                                                    <h5>итого :<span class="f-right">0р.</span></h5>
+                                                    <h5>итого :<span class="f-right">{{ totalSum }}р.</span></h5>
                                                     <div class="cart-actions">
-                                                        <a class="checkout" href="/cart/index">Корзина</a>
+                                                        <router-link class="checkout" to="/cart">Корзина</router-link>
                                                     </div>
                                                 </div>
                                                 <!-- Cart Footer Inner End -->
-
-
-
-
 
                                             </li>
                                         </ul>
@@ -114,20 +150,15 @@
                             <div class="mobile-menu">
                                 <nav>
                                     <ul>
-                                        <li><router-link to="/">Home</router-link></li>
-                                        <li><a href="/shop/index">Товары</a></li>
-
-
-                                      
-                                        <li><router-link to="/about">О Нас</router-link></li>
-                                        <li><a href="contact.html">Контакты</a></li>
-
-                                        <li>
-
-                                            <a href="/auth/logout">
-                                                <i class="fa fa-sign-out" aria-hidden="true"></i> LogOut <br/>
-                                            </a>
-
+                                        <li><router-link to="/">Домой</router-link></li>
+                                        <li><router-link to="/shop">Товары</router-link></li>
+                                        <li><router-link to="/about">О Нас</router-link></li>                                        
+                                        <li><router-link to="/contacts">Контакты</router-link></li>
+                                        <li>                                           
+                                            <router-link to="/auth">
+                                                <i class="fa fa-key" aria-hidden="true"></i>
+                                                Личный кабинет <br/>
+                                            </router-link>                              
                                         </li>
                                     </ul>
                                 </nav>
@@ -142,6 +173,8 @@
             <!-- Header Bottom End -->
         </header>
         <!-- Header Area End -->
+
+    </div>
 </template>
 
 <script>
