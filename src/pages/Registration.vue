@@ -109,30 +109,17 @@
         </div>
 
         <div class="form-group field-regform-verifycode">
-          <label class="control-label" for="regform-verifycode"
-            >Verify Code</label
-          >
-
-          <div class="row">
-            <div class="col-lg-2 col-3">
-              <img
-                id="regform-verifycode-image"
-                src="/site/captcha?v=6195f95fec24a7.10313480"
-                alt=""
-              />
-            </div>
-            <div class="col-lg-5 col-3 ml-3">
-              <input
-                type="text"
-                id="regform-verifycode"
-                class="form-control"
-                name="RegForm[verifyCode]"
-              />
-            </div>
-          </div>
-
-          <p class="help-block help-block-error"></p>
+          <vue-recaptcha 
+            ref="recaptcha"               
+            :sitekey="sitekey"
+            @verify="onVerify"                         
+        />
+     
         </div>
+
+        
+
+
         <div class="loginButton">
           <div class="form-group">
             <button
@@ -150,6 +137,7 @@
 </template>
 
 <script>
+
 import {
   required,
   maxLength,
@@ -157,19 +145,45 @@ import {
   email,
   sameAs,
 } from "vuelidate/lib/validators";
+import VueRecaptcha from 'vue-recaptcha'
 export default {
+ components: { VueRecaptcha },
   data() {
-    return {
+    return { 
+      sitekey: '6LfSelIdAAAAACaTeQIBrJcqSGbXOwgU7QLLbSM5',    
       login: "",
       password: "",
       email: "",
-      password_repeat:""
+      password_repeat:"",
+     
+      recaptchaToken:"",
     };
   },
+ 
   methods: {
-    submit: function () {
-      console.log("=====Submited!=====");
+     onVerify: function (response) {
+       this.recaptchaToken = response
     },
+    submit: function () {
+      if(this.recaptchaToken){
+        console.log(this.recaptchaToken)
+        console.log("=====Submited!=====");
+      }else{
+        console.log("TOKEN не заполнен ВЫ РОБОТ!")
+      }
+      
+     
+      /* axios.post('https://yourserverurl.com/register', {
+        email: this.email,
+        password: this.password,
+        recaptchaToken: recaptchaToken
+       })*/
+
+      
+    },
+
+    
+   
   },
 
   validations: {
@@ -190,7 +204,11 @@ export default {
     },
     password_repeat:{
         sameAs: sameAs('password')
-    }
+    },  
+    recaptchaToken:{
+      required
+    }  
+    
   },
 };
 </script>
