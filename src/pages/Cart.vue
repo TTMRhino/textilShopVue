@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-md-12">
           <!-- Form Start -->
-          <form action="#" id="table">
+          <form action="#" id="table" v-if="items.length > 0">
             <!-- Table Content Start -->
             <div class="table-content table-responsive mb-50">
               <div class="cart-table">
@@ -25,25 +25,32 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <!-- FOREACH session cart -->
+                    <tr v-for="item in items" :key="item.id">
                       <td class="product-thumbnail">
-                        <a
-                          href="/img/products/lsf000001.jpg"
-                          data-fancybox="images"
+                        <router-link
+                          :to="{
+                            name: 'detail',
+                            params: { id: item.id },
+                            query: { img: item.img },
+                          }"
                         >
-                          <img
-                            src="/img/products/lsf000001.jpg"
-                            alt="cart-image"
-                          />
-                        </a>
+                          <img :src="item.img" alt="cart-image" />
+                        </router-link>
                       </td>
                       <td class="product-name">
-                        <a href="/product/view?vendor=sf000001">
-                          Фатин Kristal Tul белый 1 п/м (1*3м)
-                        </a>
+                        <router-link
+                          :to="{
+                            name: 'detail',
+                            params: { id: item.id },
+                            query: { img: item.img },
+                          }"
+                        >
+                          {{ item.item }}
+                        </router-link>
                       </td>
                       <td class="product-price">
-                        <span class="amount">150р.</span>
+                        <span class="amount"> {{ item.price }} р.</span>
                       </td>
 
                       <!-- Add quantity -->
@@ -58,34 +65,37 @@
 
                         <button
                           type="button"
-                          data-qty="-1"
-                          data-id="1"
                           class="btn btn-light minus"
+                          @click="changeQuantity(item, -1)"
                         >
                           -
                         </button>
                         <input
-                          id="count1"
+                          id="count<?= $item['id'] ?>"
                           disabled
-                          data-id="1"
                           type="text"
-                          value="1"
+                          :value="item.quantity"
                         />
                         <button
                           type="button"
                           class="btn btn-light plus"
-                          data-qty="1"
-                          data-id="1"
+                          @click="changeQuantity(item, 1)"
                         >
                           +
                         </button>
                       </td>
 
-                      <td class="product-subtotal">150</td>
+                      <td class="product-subtotal">
+                        {{ item.quantity * item.price }}
+                      </td>
                       <td class="product-remove">
-                        <a href="/cart/del-item?id=1" class="delete" data-id="1"
-                          ><i class="fa fa-times" aria-hidden="true"></i
-                        ></a>
+                        <button
+                          type="button"
+                          class="delete btn btn-link"
+                          @click="deleteItem(item)"
+                        >
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
                       </td>
                     </tr>
                   </tbody>
@@ -111,14 +121,18 @@
                       <tr class="order-total">
                         <th>Всего:</th>
                         <td>
-                          <strong><span class="amount">150 руб.</span></strong>
+                          <strong
+                            ><span class="amount"
+                              >{{ totalSum }} руб.</span
+                            ></strong
+                          >
                         </td>
                       </tr>
                     </tbody>
                   </table>
 
                   <div class="wc-proceed-to-checkout">
-                    <a href="checkout">Оформить заказ</a>
+                    <router-link to="/checkout">Оформить заказ</router-link>
                   </div>
                 </div>
               </div>
@@ -138,7 +152,30 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      items: this.$store.getters.getCartItems,
+    };
+  },
+
+  computed: {
+    totalQuantity() {
+      return this.$store.getters.totalQuantity;
+    },
+    totalSum() {
+      return this.$store.getters.totalSum;
+    },
+  },
+
+  methods: {
+    changeQuantity(item, quantity) {
+      //TO DO ......
+      console.log(`QUANTITY ${quantity} id= ${item.item}`);
+      this.$store.dispatch("addToCart", { item, quantity });
+    },
+
+    deleteItem(item) {
+      this.$store.dispatch("deleteItemFromCart", { item });
+    },
   },
 };
 </script>

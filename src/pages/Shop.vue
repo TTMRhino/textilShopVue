@@ -62,32 +62,12 @@
               </ul>
             </div>
             <!-- Toolbar Short Area Start -->
-            <div class="main-toolbar-sorter f-right">
-              <div class="toolbar-sorter">
-                <div class="btn-group btn-sort">
-                  <button
-                    type="button"
-                    class="btn btn-default dropdown-toggle"
-                    data-toggle="dropdown"
-                  >
-                    Сортировать <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="/shop/index?sort=item">Имя</a></li>
-                    <li><a href="/shop/index?sort=price">Цена</a></li>
-                  </ul>
-                </div>
-
-                <span
-                  ><a href="/shop/index?type_sort=DESC&sort=price"
-                    ><i class="fa fa-arrow-up"></i></a
-                ></span>
-                <span
-                  ><a href="/shop/index?type_sort=ASC&sort=price"
-                    ><i class="fa fa-arrow-down"></i></a
-                ></span>
-              </div>
-            </div>
+           <!-- SORT -->
+                            <div class="main-toolbar-sorter f-right">
+                                
+                                <sort-panel></sort-panel>
+                            </div>
+                            <!-- SORT End -->
             <!-- Toolbar Short Area End -->
           </div>
 
@@ -133,13 +113,13 @@
                           >
                             {{ item.item }}
                           </a>
-                          >
+                          
                         </h4>
                         <p>
                           <span class="price">{{ item.price }} р.</span>
                           <del
                             class="prev-price"
-                            v-if="item.old_price < item.price"
+                            v-if="item.old_price > item.price"
                           >
                             {{ item.old_price }}р.
                           </del>
@@ -207,6 +187,20 @@
               <!-- LIST VIEW  -->
               <!-- #grid view End -->
 
+              <div v-if="loading" class="media">
+                <div class="media-body">
+                  <HourGlass
+                    class="mt-0"
+                    style="
+                      text-align: center;
+                      margin-left: auto;
+                      margin-right: auto;
+                      color: red;
+                    "
+                  ></HourGlass>
+                </div>
+              </div>
+
               <div id="list-view" class="tab-pane active">
                 <div
                   class="single-product"
@@ -260,7 +254,7 @@
 
                       <del
                         class="prev-price"
-                        v-if="item.old_price < item.price"
+                        v-if="item.old_price > item.price"
                       >
                         {{ item.old_price }}р.
                       </del>
@@ -286,10 +280,9 @@
                           data-id="#"
                           data-toggle="tooltip"
                           title="Add to Cart"
-                          @click="addItemToCart()"
+                          @click="addItemToCart(item)"
                         >
-                          В корзину</a
-                        >
+                          В корзину</a>
                       </div>
                     </div>
                   </div>
@@ -365,7 +358,13 @@
 </template>
 
 <script>
+import { HourGlass } from "vue-loading-spinner";
+import SortPanel from "./components/SortPanel.vue"
 export default {
+  components:{
+    'sort-panel':SortPanel,
+     HourGlass
+  },
   date() {
     return {};
   },
@@ -377,6 +376,9 @@ export default {
   computed: {
     items() {
       return this.$store.getters.items;
+    },
+    loading() {
+      return this.$store.getters.loading;
     },
   },
 

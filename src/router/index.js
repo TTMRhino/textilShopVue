@@ -7,6 +7,7 @@ import Shop from '../pages/Shop.vue'
 import Auth from '../pages/Auth.vue'
 import Cabinet from '../pages/Cabinet.vue'
 import Cart from '../pages/Cart.vue'
+import Checkout from '../pages/Checkout.vue'
 import Registration from '../pages/Registration.vue'
 
 Vue.use(VueRouter)
@@ -50,6 +51,11 @@ const routes = [{
         path: '/registration',
         name: 'Registration',
         component: Registration
+    },
+    {
+        path: '/checkout',
+        name: 'Checkout',
+        component: Checkout
     }
 
 ]
